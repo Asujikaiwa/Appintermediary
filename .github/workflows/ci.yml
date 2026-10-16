@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Lint / Typecheck / Test (app + packages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Expo SDK compatibility check
+        working-directory: apps/mobile
+        run: npx expo install --check
+
+      - name: Dependency vulnerability audit
+        run: pnpm audit --audit-level high
+
+  backend:
+    name: Supabase migrations + db lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase (applies all migrations)
+        run: supabase db start
+
+      - name: Lint database schema
+        run: supabase db lint --level warning
+
+# EAS build/submit runs from a separate workflow (eas-build.yml) triggered on
+# release tags, using EXPO_TOKEN secret. Kept out of PR CI to save build credits.

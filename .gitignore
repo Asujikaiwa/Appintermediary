@@ -1,0 +1,44 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# expo / react native
+.expo/
+apps/mobile/ios/
+apps/mobile/android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# builds
+dist/
+build/
+.turbo/
+coverage/
+
+# env & secrets — NEVER commit real keys
+.env
+.env.*
+!.env.example
+
+# supabase local
+supabase/.branches/
+supabase/.temp/
+
+# os / editor
+.DS_Store
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# added by push-github.ps1
+.next/
+.dart_tool/
+.gradle/
+Pods/
+!.env.sample
+*.pem
+*serviceAccount*.json

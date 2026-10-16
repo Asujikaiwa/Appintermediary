@@ -1,0 +1,10 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+# pnpm 10+ settings live here (pnpm no longer reads .npmrc).
+# React Native / Expo needs hoisted node_modules with pnpm.
+nodeLinker: hoisted
+engineStrict: true
+allowBuilds:
+  unrs-resolver: true
